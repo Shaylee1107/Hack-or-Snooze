@@ -37,23 +37,19 @@ class StoryList {
   }
 
   async addStory(title, author, url, username) {
-    const token = localStorage.token; 
-    const res = await axios.post(`https://hack-or-snooze-v3.herokuapp.com/stories`, {
-      "token": `${token}`,
-  "story": {
-    "author": `${author}`,
-    "title": `${title}`,
-    "url": `${url}`,
-  }
+    const userToken = localStorage.token;
+    const response = await axios({
+      url: `${BASE_URL}/stories`,
+      method: "POST",
+      data: { token: userToken, story: {author: `${author}`, title: `${title}`, url: `${url}`} },
     });
    
     const story = new StoryList();
     const storyId = await story.getStoryId();
     const createdAt = await story.getDateAndTime();
     const newStory = new Story({ storyId, title, author, url, createdAt, username });
-
     createUserStoryUI(newStory);
-    res; 
+    response; 
 
     //below tests if the submit button to add a story was pressed while ON the "My Stores" tab and prepends the story right then (instead of waiting for the "My Stories" button to be clicked to prepend the story)
     const userStories = $('#my-stories-list');
@@ -65,8 +61,14 @@ class StoryList {
 
   async getStoryId(){
     const username = localStorage.username;
-    const res = await axios.get(`https://hack-or-snooze-v3.herokuapp.com/users/${username}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
-    const myUser = res.data.user.stories;
+    const userToken = localStorage.token; 
+    const response = await axios({
+      url: `${BASE_URL}/users/${username}`,
+      method: "GET",
+      params: {token: userToken}
+    });
+
+    const myUser = response.data.user.stories;
     const lastItem = myUser[myUser.length -1];
     const myId = lastItem.storyId; 
 
@@ -75,8 +77,14 @@ class StoryList {
 
   async getDateAndTime(){
     const username = localStorage.username;
-    const res = await axios.get(`https://hack-or-snooze-v3.herokuapp.com/users/${username}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
-    const myUser = res.data.user.stories;
+    const userToken = localStorage.token;
+    const response = await axios({
+      url: `${BASE_URL}/users/${username}`,
+      method: "GET",
+      params: {token: userToken}
+    });
+
+    const myUser = response.data.user.stories;
     const lastItem = myUser[myUser.length -1];
     const dateAndTime = lastItem.createdAt; 
 
