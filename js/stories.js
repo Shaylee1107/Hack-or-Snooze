@@ -54,8 +54,8 @@ async function getStorySubmitData(evt){
   const author = $('#story-author').val();
   const title = $('#story-title').val();
   const url = $('#story-url').val();
-  const username = localStorage.username;
-  story.addStory(title, author, url, username);
+
+  story.addStory(title, author, url, currUser);
 }
 
 $('#nav-favorites').on('click', navShowFavorites);
@@ -64,15 +64,14 @@ async function navShowFavorites(){
   $('#all-stories-list').css('display', 'none');
   $('#my-stories-list').addClass('hide');
   $('#favorites-list').removeClass('hide');
-  const username = localStorage.username;
-  const res = await axios.get(`https://hack-or-snooze-v3.herokuapp.com/users/${username}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
+  const res = await axios.get(`${BASE_URL}/users/${currUser}?token=${userToken}`);
   const userFavs = res.data.user.favorites; 
 
   const array = currentFavoritesOnPage();
 
   //for each favorite story in the User's favorite object, it gets prepended into the favoritesList 
   for(let favs of userFavs){
-    const res2 = axios.get(`https://hack-or-snooze-v3.herokuapp.com/stories/${favs.storyId}`);
+    const res2 = axios.get(`${BASE_URL}/stories/${favs.storyId}`);
     const storyR = Promise.resolve(res2);
     const storyA = await storyR; 
     const story = storyA.data.story;
@@ -143,8 +142,7 @@ async function navShowFavorites(){
 
   //this finds the ids of the stories that are currently in the User's saved favorites object list
   async function getIdOfUserFavorites(){
-    const username = localStorage.username;
-    const res = await axios.get(`https://hack-or-snooze-v3.herokuapp.com/users/${username}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
+    const res = await axios.get(`${BASE_URL}/users/${currUser}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
     const resR = Promise.resolve(res);
     const resA = await resR; 
     const userFavs = resA.data.user.favorites; 
@@ -164,10 +162,8 @@ async function addingMyStoriesToTab(){
   $('#all-stories-list').css('display', 'none');
   $('#favorites-list').addClass('hide');
   $('#my-stories-list').removeClass('hide');
-  const username = localStorage.username;
-  const res = await axios.get(`https://hack-or-snooze-v3.herokuapp.com/users/${username}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
+  const res = await axios.get(`${BASE_URL}/users/${currUser}?token=${userToken}`);
   const userStories = res.data.user.stories; 
-  console.log(userStories, 'this is userStories');
   const array = getIdOfUserStories();
 
   for(let story of userStories){

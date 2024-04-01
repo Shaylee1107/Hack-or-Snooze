@@ -1,9 +1,8 @@
 "use strict";
-
 const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
 
 let currUser = localStorage.username;
-
+let userToken = localStorage.token; 
 
 class Story {
   constructor({ storyId, title, author, url, username, createdAt }) {
@@ -37,7 +36,6 @@ class StoryList {
   }
 
   async addStory(title, author, url, username) {
-    const userToken = localStorage.token;
     const response = await axios({
       url: `${BASE_URL}/stories`,
       method: "POST",
@@ -60,10 +58,8 @@ class StoryList {
   }
 
   async getStoryId(){
-    const username = localStorage.username;
-    const userToken = localStorage.token; 
     const response = await axios({
-      url: `${BASE_URL}/users/${username}`,
+      url: `${BASE_URL}/users/${currUser}`,
       method: "GET",
       params: {token: userToken}
     });
@@ -76,10 +72,8 @@ class StoryList {
   }
 
   async getDateAndTime(){
-    const username = localStorage.username;
-    const userToken = localStorage.token;
     const response = await axios({
-      url: `${BASE_URL}/users/${username}`,
+      url: `${BASE_URL}/users/${currUser}`,
       method: "GET",
       params: {token: userToken}
     });
@@ -184,7 +178,6 @@ class User {
     const starId = li.getAttribute('id');
     const favs = $('#favorites-list');
     const items = favs.children();
-    const username = localStorage.username;
   
       for(let i = 0; i < items.length; i++){
         const index = items[i];
@@ -192,7 +185,7 @@ class User {
   
         if(indexId === starId){
           index.remove();
-          const removeFavorite = axios.delete(`https://hack-or-snooze-v3.herokuapp.com/users/${username}/favorites/${indexId}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
+          const removeFavorite = axios.delete(`${BASE_URL}/users/${currUser}/favorites/${indexId}?token=${userToken}`);
           removeFavorite; 
         }
       }
@@ -217,9 +210,6 @@ class User {
   }
 
   static async addStoryToFavorites(clone){
-    const username = localStorage.username;
-    const res = await axios.get(`https://hack-or-snooze-v3.herokuapp.com/users/${username}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
-    const user = res.data.user.username;
     const storyId = clone.getAttribute('id');
 
     const cloneStar = clone.childNodes.item(1);
@@ -228,7 +218,7 @@ class User {
     pathStar.setAttribute('d', 'M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z');
     makingStar.setAttribute('data-prefix', 'fas');
    
-    const updateFavs = await axios.post(`https://hack-or-snooze-v3.herokuapp.com/users/${user}/favorites/${storyId}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
+    const updateFavs = await axios.post(`${BASE_URL}/users/${currUser}/favorites/${storyId}?token=${userToken}`);
     updateFavs; 
   }
 
@@ -240,7 +230,7 @@ class User {
     if (trash !== null) {
       const li = trash.closest('li');
       const id = li.getAttribute('id');
-      const res = axios.delete(`https://hack-or-snooze-v3.herokuapp.com/stories/${id}?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNoYXlsZWUxMTA3NyIsImlhdCI6MTcwOTE2MTk5OX0.JjOIcnQg_b8G99fsLO3PnO6RS2oAKtMVACwL30sMgQ8`);
+      const res = axios.delete(`${BASE_URL}/stories/${id}?token=${userToken}`);
       res;
 
       li.remove();
