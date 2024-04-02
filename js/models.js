@@ -13,7 +13,7 @@ class Story {
     this.username = username;
     this.createdAt = createdAt;
   }
-
+  //This is the parens that appear after the title of the stories the User uploads. 
   getHostName() {
     return "hostname.com";
   }
@@ -244,57 +244,4 @@ class User {
   }
 }
 
-//this document.addEventListener checks if the user presses the trash button on the "My Stories tab"
-
-document.addEventListener('click', User.removeUsersStory);
-
-//below determines if the star you clicked is colored (meaning you already clicked it once) or not
-
-document.addEventListener('click', function(event){
-  const star = event.target.closest('.fa-star');
-  if (star !== null) {
-    if(star.hasAttribute('name')){
-      star.classList.remove('fas');
-      star.classList.add('far');
-      star.removeAttribute('name');
-  
-      updateFavoriteStories(star);
-    } else {
-      star.classList.remove('far');
-      star.classList.add('fas');
-      star.setAttribute('name', 'colored');
-    
-      updateFavoriteStories(star);
-    }
-}
-})
-
-function updateFavoriteStories(star){
-  const li = star.closest("li");
-  const parentOl = star.closest('ol');
-  const clone = li.cloneNode(true);
-  const parentId = parentOl.getAttribute('id');
-  const favsOl = $('#favorites-list');
-
-  if(star.classList.contains('fas')){
-    User.addStoryToFavorites(clone);
-  } else {
-
-    if(parentId === 'favorites-list'){
-      User.removeStarFromStoryList(li);
-      User.removeStoryFromFavorites(li);
-      if(favsOl.length === 1){
-        const noFavsMsg = $('#no-favs-msg');
-        noFavsMsg.removeClass('hide');
-      }
-    } else {
-      User.removeStoryFromFavorites(li);
-      if(favsOl.length === 1){
-        const noFavsMsg = $('#no-favs-msg');
-        noFavsMsg.removeClass('hide');
-      }
-    }
-
-  }
-}
 
