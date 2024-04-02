@@ -111,6 +111,13 @@ function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
   $allStoriesList.show();
-
+ 
   updateNavOnLogin();
 }
+
+function checkingForLoggedInUser(){
+  if(currentUser){
+    $('#logged-in-nav-buttons').removeClass('hide');
+  }
+}
+

@@ -29,3 +29,7 @@ nav {
 .hide {
   display: none;
 }
+
+#user-nav-buttons {
+  display: flex;
+}

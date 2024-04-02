@@ -27,6 +27,7 @@ function updateNavOnLogin() {
   $navLogin.hide();
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
+  checkingForLoggedInUser();
 }
 
 //This controls the Submit tab on the navbar. The if statement tests if the Submit tab is opened or not to give it a toggling feature
