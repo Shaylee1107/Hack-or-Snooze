@@ -80,10 +80,12 @@ function clearSubmitInputValues(){
 }
 
 //Making the favorites list dissapear on the Hack or Snooze nav button
-$('.navbar-brand').on('click', function(){
+$('.navbar-brand').on('click', navHackOrSnoozeButton)
+async function navHackOrSnoozeButton(){
+  location.reload();
   $('#favorites-list').addClass('hide');
   $('#my-stories-list').addClass('hide');
-})
+}
 
 $('#nav-favorites').on('click', navShowFavorites);
 async function navShowFavorites(){
