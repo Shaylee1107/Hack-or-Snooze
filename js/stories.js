@@ -174,22 +174,24 @@ function updateFavoriteStories(star) {
   const clone = li.cloneNode(true);
   const parentId = parentOl.getAttribute('id');
   const favsOl = $('#favorites-list');
-
+  const favsLis = favsOl.children();
+  
   if (star.classList.contains('fas')) {
     User.addStoryToFavorites(clone);
   } else {
     //If the star does NOT contain 'fas', we run another if statement to see the action of removing the star color was made in the Favorites tab OR the Hacker News tab. 
     //If it was in the Favorites Tab we we have to remove the star from the Hacker Snooze tab AND the Favorites tab while removing the whole story from the Favorites tab. (If the star was clicked on the Hacker Snooze tab the star was already removed, it was clicked on the Favorites tab that star was removed and we need to remove it from the Hacker Snooze tab also).
     if (parentId === 'favorites-list') {
+      
       User.removeStarFromStoryList(li);
       User.removeStoryFromFavorites(li);
-      if (favsOl.length === 1) {
+      if (favsLis.length === 2) {
         const noFavsMsg = $('#no-favs-msg');
         noFavsMsg.removeClass('hide');
       }
     } else {
       User.removeStoryFromFavorites(li);
-      if (favsOl.length === 1) {
+      if (favsLis.length === 2) {
         const noFavsMsg = $('#no-favs-msg');
         noFavsMsg.removeClass('hide');
       }
