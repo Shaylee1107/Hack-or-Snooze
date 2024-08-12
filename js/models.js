@@ -144,15 +144,13 @@ class User {
     const starId = li.getAttribute('id');
     const favs = $('#favorites-list');
     const items = favs.children();
+    await axios.delete(`${BASE_URL}/users/${currUser}/favorites/${starId}?token=${userToken}`);
 
     for (let i = 0; i < items.length; i++) {
       const index = items[i];
       const indexId = index.getAttribute('id');
-
       if (indexId === starId) {
         index.remove();
-        const removeFavorite = axios.delete(`${BASE_URL}/users/${currUser}/favorites/${indexId}?token=${userToken}`);
-        removeFavorite;
       }
     }
   }
