@@ -35,7 +35,7 @@ class StoryList {
     return new StoryList(stories);
   }
 
-  async addStory(title, author, url, username) {
+  async addStory(title, author, url) {
     const response = await axios({
       url: `${BASE_URL}/stories`,
       method: "POST",
@@ -144,7 +144,12 @@ class User {
     const starId = li.getAttribute('id');
     const favs = $('#favorites-list');
     const items = favs.children();
-    await axios.delete(`${BASE_URL}/users/${currUser}/favorites/${starId}?token=${userToken}`);
+
+    await axios({
+      url: `${BASE_URL}/users/${currUser}/favorites/${starId}?`, 
+      method: "DELETE",
+      params: { token: userToken },
+    });
 
     for (let i = 0; i < items.length; i++) {
       const index = items[i];
@@ -182,8 +187,11 @@ class User {
     pathStar.setAttribute('d', 'M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z');
     makingStar.setAttribute('data-prefix', 'fas');
 
-    const updateFavs = await axios.post(`${BASE_URL}/users/${currUser}/favorites/${storyId}?token=${userToken}`);
-    updateFavs;
+    await axios({
+      url: `${BASE_URL}/users/${currUser}/favorites/${storyId}?`,
+      method: "POST",
+      params: { token: userToken },
+    });
   }
 
   static async removeUsersStory(event) {
@@ -194,16 +202,18 @@ class User {
     if (trash !== null) {
       const li = trash.closest('li');
       const id = li.getAttribute('id');
-      const res = axios.delete(`${BASE_URL}/stories/${id}?token=${userToken}`);
-      res;
-
       li.remove();
+
+      await axios({
+        url: `${BASE_URL}/stories/${id}?`,
+        method: "DELETE",
+        params: { token: userToken },
+      });
 
       if (storiesChildren.length === 2) {
         const noStoriesMsg = $('#no-stories-msg');
         noStoriesMsg.removeClass('hide');
       }
-
     }
   }
 }
