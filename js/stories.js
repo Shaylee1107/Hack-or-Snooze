@@ -49,8 +49,16 @@ async function getStorySubmitData(evt) {
   const author = $('#story-author').val();
   const title = $('#story-title').val();
   const url = $('#story-url').val();
+  const newStory = await story.addStory(title, author, url, currUser);
 
-  story.addStory(title, author, url, currUser);
+  if(newStory !== undefined){
+    createUserStoryUI(newStory);
+
+    const userStories = $('#my-stories-list');
+    if (!(userStories.hasClass('hide'))) {
+      addingMyStoriesToTab();
+    }
+  }
 }
 
 function currentFavoritesOnPage() {

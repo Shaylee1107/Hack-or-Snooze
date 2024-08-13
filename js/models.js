@@ -36,19 +36,25 @@ class StoryList {
   }
 
   async addStory(title, author, url) {
-    const response = await axios({
-      url: `${BASE_URL}/stories`,
-      method: "POST",
-      data: { token: userToken, story: { author, title, url} },
-    });
-
-    const newStory = new Story(response.data.story);
-    createUserStoryUI(newStory);
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/stories`,
+        method: "POST",
+        data: { token: userToken, story: { author, title, url} },
+      });
   
-    const userStories = $('#my-stories-list');
-    if (!(userStories.hasClass('hide'))) {
-      addingMyStoriesToTab();
+      return new Story(response.data.story);
+    
+    } catch (error){
+      await StoryList.displayAddStoryError();
     }
+  }
+
+  static async displayAddStoryError(){
+    const storyForm = $('#story-form');
+    const signupErrorMessage = $('<div>Error: resource needs a valid url...</div>').css('color', 'red');
+    $('#story-url').css('border', '1px solid red');
+    return await signupErrorMessage.appendTo(storyForm);
   }
 
 }
