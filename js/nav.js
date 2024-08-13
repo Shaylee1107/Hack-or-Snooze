@@ -95,17 +95,24 @@ async function navShowFavorites(){
   $('#all-stories-list').css('display', 'none');
   $('#my-stories-list').addClass('hide');
   $('#favorites-list').removeClass('hide');
-  const res = await axios.get(`${BASE_URL}/users/${currUser}?token=${userToken}`);
+  const res = await axios({
+    url: `${BASE_URL}/users/${currUser}?`,
+    method: "GET",
+    params: { token: userToken },
+  });
   const userFavs = res.data.user.favorites; 
 
   const array = currentFavoritesOnPage();
 
   //for each favorite story in the User's favorite object, it gets prepended into the favoritesList 
   for(let favs of userFavs){
-    const res2 = axios.get(`${BASE_URL}/stories/${favs.storyId}`);
-    const storyR = Promise.resolve(res2);
-    const storyA = await storyR; 
-    const story = storyA.data.story;
+    const res2 = await axios({
+      url: `${BASE_URL}/stories/${favs.storyId}`,
+      method: "GET",
+      params: { token: userToken },
+    });
+    const resolve = await Promise.resolve(res2);
+    const story = resolve.data.story;
 
     //But i want to check if the story is already prepended into there first, and not let it be prepended again if so
     if(!(array.includes(story.storyId))){
@@ -142,9 +149,12 @@ async function addingMyStoriesToTab(){
   $('#all-stories-list').css('display', 'none');
   $('#favorites-list').addClass('hide');
   $('#my-stories-list').removeClass('hide');
-  const res = await axios.get(`${BASE_URL}/users/${currUser}?token=${userToken}`);
+  const res = await axios({
+    url: `${BASE_URL}/users/${currUser}?`,
+    method: "GET",
+    params: { token: userToken },
+  });
   const userStories = res.data.user.stories; 
-  //grabs the id's of stories currently in the my stories list (stories.js 127)
   const array = getIdOfUserStories();
 
   for(let story of userStories){

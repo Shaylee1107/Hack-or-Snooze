@@ -199,7 +199,11 @@ function updateFavoriteStories(star) {
 async function getIdOfUserFavorites() {
   const array = [];
   if (currUser) {
-    const res = await axios.get(`${BASE_URL}/users/${currUser}?token=${userToken}`);
+    const res = await axios({
+      url: `${BASE_URL}/users/${currUser}?`,
+      method: "GET",
+      params: { token: userToken },
+    });
     const resR = Promise.resolve(res);
     const resA = await resR;
     const userFavs = resA.data.user.favorites;

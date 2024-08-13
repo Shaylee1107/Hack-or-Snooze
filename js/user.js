@@ -85,7 +85,6 @@ async function checkForRememberedUser() {
   if (!token || !username) return false;
 
   // try to log in with these credentials (will be null if login failed)
-  console.log(username, 'username in check')
   currentUser = await User.loginViaStoredCredentials(token, username);
 }
 
