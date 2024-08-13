@@ -23,9 +23,12 @@ async function login(evt) {
 
   $loginForm.trigger("reset");
 
-  saveUserCredentialsInLocalStorage();
-  updateUIOnUserLogin();
-  location.reload();
+  if(currentUser !== undefined){
+    saveUserCredentialsInLocalStorage();
+    updateUIOnUserLogin();
+    location.reload();
+  }
+ 
 }
 
 $loginForm.on("submit", login);
@@ -44,8 +47,10 @@ async function signup(evt) {
   // which we'll make the globally-available, logged-in user.
   currentUser = await User.signup(username, password, name);
 
-  saveUserCredentialsInLocalStorage();
-  updateUIOnUserLogin();
+  if(currentUser !== undefined){
+    saveUserCredentialsInLocalStorage();
+    updateUIOnUserLogin();
+  }
 
   $signupForm.trigger("reset");
 }
@@ -80,6 +85,7 @@ async function checkForRememberedUser() {
   if (!token || !username) return false;
 
   // try to log in with these credentials (will be null if login failed)
+  console.log(username, 'username in check')
   currentUser = await User.loginViaStoredCredentials(token, username);
 }
 

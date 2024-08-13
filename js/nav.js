@@ -23,11 +23,14 @@ function updateNavOnLogin() {
   console.debug("updateNavOnLogin");
   $(".main-nav-links").show();
   const formsContainer = $('.account-forms-container');
-  formsContainer.addClass('hide');
-  $navLogin.hide();
-  $navLogOut.show();
-  $navUserProfile.text(`${currentUser.username}`).show();
-  checkingForLoggedInUser();
+  if(currentUser.username !== undefined){
+    formsContainer.addClass('hide');
+    $navLogin.hide();
+    $navLogOut.show();
+    $navUserProfile.text(`${currentUser.username}`).show();
+    checkingForLoggedInUser();
+  }
+  
 }
 
 //This controls the Submit tab on the navbar. The if statement tests if the Submit tab is opened or not to give it a toggling feature

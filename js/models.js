@@ -73,45 +73,71 @@ class User {
   }
 
   static async signup(username, password, name) {
-    const response = await axios({
-      url: `${BASE_URL}/signup`,
-      method: "POST",
-      data: { user: { username, password, name } },
-    });
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/signup`,
+        method: "POST",
+        data: { user: { username, password, name } },
+      });
 
-    let { user } = response.data
+      let { user } = response.data
 
-    return new User(
-      {
-        username: user.username,
-        name: user.name,
-        createdAt: user.createdAt,
-        favorites: user.favorites,
-        ownStories: user.stories
-      },
-      response.data.token
-    );
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories
+        },
+        response.data.token
+      );
+      
+    } catch (error){
+      await User.displaySignUpError();
+    } 
+    
+  }
+
+  static async displaySignUpError() {
+    const signupForm = $('#signup-form');
+    const signupErrorMessage = $('<div>Error: username has already been taken...</div>').css('color', 'red');
+    $('#signup-username').css('border', '1px solid red');
+    return await signupErrorMessage.appendTo(signupForm);
   }
 
   static async login(username, password) {
-    const response = await axios({
-      url: `${BASE_URL}/login`,
-      method: "POST",
-      data: { user: { username, password } },
-    });
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/login`,
+        method: "POST",
+        data: { user: { username, password } },
+      });
+  
+      let { user } = response.data;
+  
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories
+        },
+        response.data.token
+      );
+    } catch {
+      await User.displayLoginError();
+    }
+    
+  }
 
-    let { user } = response.data;
-
-    return new User(
-      {
-        username: user.username,
-        name: user.name,
-        createdAt: user.createdAt,
-        favorites: user.favorites,
-        ownStories: user.stories
-      },
-      response.data.token
-    );
+  static async displayLoginError() {
+    const loginForm = $('#error-message');
+    const loginErrorMessage = $('<div>Error: username or password is not correct...</div>').css('color', 'red');
+    $('#login-username').css('border', '1px solid red');
+    $('#login-password').css('border', '1px solid red');
+    return await loginErrorMessage.appendTo(loginForm);
   }
 
   static async loginViaStoredCredentials(token, username) {
